@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小说列表 - 小汤圆的快乐小屋</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #f9f7f8;
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      }
+      .cebian {
+        width: 200px;
+        background-color: #ffffff;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 12px !important;
+        margin: 10px;
+        padding: 16px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+        position: fixed;
+        height: calc(100vh - 20px);
+      }
+      .avatar-box {
+        display: flex;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e8e2e9 !important;
+        margin-bottom: 16px;
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #f3edf7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7c3aed;
+        font-size: 18px;
+      }
+      .nickname {
+        margin-left: 12px;
+        font-size: 18px;
+        color: #5a4b60;
+        font-weight: 500;
+      }
+      .nav-list {
+        list-style: none;
+      }
+      .nav-item {
+        margin-bottom: 8px;
+      }
+      .nav-link {
+        display: block;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #5a4b60;
+        font-size: 16px;
+        border-radius: 8px !important;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+      .nav-link.active {
+        background-color: #ede9fe !important;
+        color: #7c3aed !important;
+        font-weight: 500;
+      }
+      .nav-link:hover {
+        background-color: #f3edf7 !important;
+        color: #8b5cf6 !important;
+      }
+      .main-content {
+        margin-left: 220px;
+        padding: 20px;
+      }
+      .upload-box {
+        background-color: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+        margin-bottom: 20px;
+      }
+      .upload-title {
+        font-size: 20px;
+        color: #7c3aed;
+        margin-bottom: 16px;
+      }
+      .form-item {
+        margin-bottom: 12px;
+      }
+      .form-label {
+        display: block;
+        margin-bottom: 4px;
+        color: #5a4b60;
+        font-size: 14px;
+      }
+      #titleInput {
+        width: 300px;
+        padding: 8px;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 6px;
+      }
+      #fileInput {
+        padding: 8px;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 6px;
+        margin-right: 10px;
+      }
+      #uploadBtn {
+        padding: 8px 20px;
+        background-color: #7c3aed;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .message-box {
+        margin-top: 12px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: none;
+      }
+      .message-box.success {
+        background-color: #dcfce7;
+        color: #16a34a;
+        display: block;
+      }
+      .message-box.error {
+        background-color: #fee2e2;
+        color: #dc2626;
+        display: block;
+      }
+      .novel-list {
+        background-color: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+      }
+      .list-title {
+        font-size: 20px;
+        color: #7c3aed;
+        margin-bottom: 16px;
+      }
+      .novel-item {
+        padding: 12px;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .novel-info {
+        flex: 1;
+      }
+      .novel-name {
+        color: #7c3aed;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 16px;
+      }
+      .novel-time {
+        font-size: 12px;
+        color: #917899;
+        margin-top: 4px;
+      }
+      .delete-btn {
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .empty-tip {
+        text-align: center;
+        padding: 20px;
+        color: #917899;
+      }
+      .loading-tip {
+        text-align: center;
+        padding: 20px;
+        color: #917899;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cebian">
+      <div class="avatar-box">
+        <div class="avatar">汤</div>
+        <div class="nickname">小汤圆</div>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">首页</a>
+        </li>
+        <li class="nav-item">
+          <a href="./novel.html" class="nav-link active">小说</a>
+        </li>
+        <li class="nav-item">
+          <a href="../anime/anime.html" class="nav-link">动漫</a>
+        </li>
+        <li class="nav-item">
+          <a href="../video/video.html" class="nav-link">视频</a>
+        </li>
+        <li class="nav-item">
+          <a href="../music/music.html" class="nav-link">音乐</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="main-content">
+      <div class="upload-box">
+        <div class="upload-title">上传小说</div>
+        <!-- 🔥 新增：标题输入框 -->
+        <div class="form-item">
+          <label class="form-label">小说标题（手动输入，避免乱码）：</label>
+          <input
+            type="text"
+            id="titleInput"
+            placeholder="例如：子夜十 作者：紫雨夜"
+          />
+        </div>
+        <div class="form-item">
+          <label class="form-label">选择TXT文件：</label>
+          <input type="file" id="fileInput" accept=".txt" />
+        </div>
+        <button id="uploadBtn" onclick="uploadNovel()">上传</button>
+        <div id="uploadMessage" class="message-box"></div>
+      </div>
+
+      <div class="novel-list">
+        <div class="list-title">我的小说</div>
+        <div id="novelList" class="loading-tip">加载中...</div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5000/api/novel";
+      const uploadMessageEl = document.getElementById("uploadMessage");
+
+      window.onload = getNovelList;
+
+      // 🔥 上传逻辑：携带手动标题
+      async function uploadNovel() {
+        const titleInput = document.getElementById("titleInput");
+        const fileInput = document.getElementById("fileInput");
+        const title = titleInput.value.trim();
+        const files = fileInput.files;
+
+        if (!title) {
+          showMessage("请输入小说标题！", "error");
+          return;
+        }
+        if (!files.length) {
+          showMessage("请选择要上传的TXT文件！", "error");
+          return;
+        }
+
+        const file = files[0];
+        if (file.type !== "text/plain" && !file.name.endsWith(".txt")) {
+          showMessage("仅支持上传.txt格式的小说文件！", "error");
+          return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          showMessage("文件大小不能超过10MB！", "error");
+          return;
+        }
+
+        try {
+          showMessage("正在上传...", "success");
+          const formData = new FormData();
+          formData.append("title", title); // 携带手动标题
+          formData.append("novelFile", file);
+
+          const res = await fetch(`${API_BASE}/upload`, {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await res.json();
+
+          if (result.success) {
+            showMessage(result.message, "success");
+            titleInput.value = ""; // 清空标题
+            fileInput.value = ""; // 清空文件
+            getNovelList();
+          } else {
+            showMessage(result.message, "error");
+          }
+        } catch (err) {
+          showMessage(`上传失败：${err.message}`, "error");
+        }
+      }
+
+      // 获取列表：显示手动标题
+      async function getNovelList() {
+        const novelListEl = document.getElementById("novelList");
+        novelListEl.innerHTML = '<div class="loading-tip">Loading...</div>';
+
+        try {
+          const res = await fetch(`${API_BASE}/list`);
+          const result = await res.json();
+
+          if (result.success) {
+            const novels = result.data;
+
+            if (novels.length === 0) {
+              novelListEl.innerHTML =
+                '<div class="empty-tip">暂无上传的小说</div>';
+              return;
+            }
+
+            let html = "";
+            novels.forEach((novel) => {
+              const uploadTime = new Date(novel.upload_time).toLocaleString();
+              // 🔥 显示手动标题，不再用文件名
+              html += `
+              <div class="novel-item">
+                <div class="novel-info">
+                  <a href="novel-read.html?book=${novel.id}" class="novel-name">
+                    ${novel.title}
+                  </a>
+                  <div class="novel-time">
+                    上传时间：${uploadTime}
+                  </div>
+                </div>
+                <button onclick="deleteNovel(${novel.id}, '${novel.title}')" class="delete-btn">
+                  删除
+                </button>
+              </div>
+            `;
+            });
+
+            novelListEl.innerHTML = html;
+          } else {
+            novelListEl.innerHTML = `<div class="empty-tip" style="color: #ef4444;">❌ ${result.message}</div>`;
+          }
+        } catch (err) {
+          novelListEl.innerHTML = `<div class="empty-tip" style="color: #ef4444;">❌ 加载失败：${err.message}</div>`;
+        }
+      }
+
+      // 删除小说：按ID删除，提示用手动标题
+      async function deleteNovel(novelId, novelTitle) {
+        const confirmDelete = confirm(
+          `确定要删除《${novelTitle}》吗？删除后无法恢复！`,
+        );
+        if (!confirmDelete) return;
+
+        try {
+          const res = await fetch(`${API_BASE}/delete/${novelId}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          const result = await res.json();
+
+          if (result.success) {
+            alert(result.message);
+            getNovelList();
+          } else {
+            alert(result.message);
+          }
+        } catch (err) {
+          alert(`❌ 删除失败：${err.message}`);
+        }
+      }
+
+      function showMessage(text, type) {
+        uploadMessageEl.textContent = text;
+        uploadMessageEl.className = `message-box ${type}`;
+        setTimeout(() => {
+          uploadMessageEl.className = "message-box";
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

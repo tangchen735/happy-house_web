@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Mixology Bar - 网页鱼缸 🐠</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background-color: #1a1a2e;
+        overflow-x: hidden;
+        font-family: "Arial", sans-serif;
+      }
+
+      /* 返回头部栏样式 */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: #222;
+        color: #fff;
+        border-bottom: 2px solid #4cc9f0;
+      }
+
+      .header__icon {
+        font-size: 2rem;
+      }
+
+      .header__title {
+        text-align: center;
+        line-height: 1.2;
+      }
+
+      .header__title-line1 {
+        font-size: 1.8rem;
+        color: #4cc9f0;
+        display: block;
+      }
+
+      .header__title-line2 {
+        font-size: 1.2rem;
+        color: #f4a261;
+        display: block;
+      }
+
+      .back-btn {
+        background-color: #4cc9f0;
+        color: #222;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background-color: #4361ee;
+        color: #fff;
+      }
+
+      /* 鱼缸容器（更真实的玻璃质感） */
+      .fish-tank {
+        position: relative;
+        width: 90%;
+        max-width: 1000px;
+        height: 70vh;
+        margin: 2rem auto;
+        background: linear-gradient(
+          180deg,
+          rgba(74, 123, 167, 0.9) 0%,
+          rgba(30, 63, 102, 0.95) 50%,
+          rgba(18, 42, 68, 1) 100%
+        );
+        border: 15px solid #e0e0e0;
+        border-radius: 15px 15px 50px 50px;
+        box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.7),
+          inset 0 0 50px rgba(0, 0, 0, 0.2),
+          inset 0 0 100px rgba(74, 123, 167, 0.5);
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* 水面波纹效果 */
+      .fish-tank::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        animation: water-wave 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes water-wave {
+        0% {
+          transform: translateY(-5px) scaleX(0.9);
+        }
+        100% {
+          transform: translateY(-2px) scaleX(1.05);
+        }
+      }
+
+      /* 水底沙子（带纹理） */
+      .sand {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: linear-gradient(#f4d35e 0%, #ee964b 50%, #e07a5f 100%);
+        border-radius: 0 0 40px 40px;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+      }
+
+      /* 沙子纹理 */
+      .sand::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          45deg,
+          rgba(0, 0, 0, 0.05) 0px,
+          rgba(0, 0, 0, 0.05) 2px,
+          transparent 2px,
+          transparent 6px
+        );
+      }
+
+      /* 水草（更真实的形态） */
+      .seaweed {
+        position: absolute;
+        bottom: 60px;
+        width: 15px;
+        border-radius: 10px 10px 0 0;
+        transform-origin: bottom center;
+        animation: sway 10s ease-in-out infinite alternate;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* 不同颜色/高度的水草 */
+      .seaweed-1 {
+        left: 120px;
+        height: 220px;
+        background: linear-gradient(#2a9d8f, #264653);
+        animation-delay: 0s;
+      }
+
+      .seaweed-2 {
+        left: 250px;
+        height: 180px;
+        background: linear-gradient(#e9c46a, #2a9d8f);
+        animation-delay: 1.5s;
+      }
+
+      .seaweed-3 {
+        left: 780px;
+        height: 200px;
+        background: linear-gradient(#264653, #2a9d8f);
+        animation-delay: 3s;
+      }
+
+      .seaweed-4 {
+        left: 600px;
+        height: 150px;
+        background: linear-gradient(#8ab17d, #2a9d8f);
+        animation-delay: 2s;
+      }
+
+      /* 水草摆动（更自然的幅度） */
+      @keyframes sway {
+        0% {
+          transform: rotate(-8deg);
+        }
+        100% {
+          transform: rotate(8deg);
+        }
+      }
+
+      /* 石头装饰 */
+      .stone {
+        position: absolute;
+        bottom: 60px;
+        left: 400px;
+        width: 80px;
+        height: 60px;
+        background: linear-gradient(#8d99ae, #6b7280);
+        border-radius: 50% 30% 50% 30%;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .stone-small {
+        left: 450px;
+        bottom: 70px;
+        width: 40px;
+        height: 30px;
+        border-radius: 50% 40% 50% 40%;
+      }
+
+      /* 鱼的基础样式（更圆润的形态） */
+      .fish {
+        position: absolute;
+        width: 80px;
+        height: 50px;
+        transform: scaleX(1);
+        transition:
+          top 2.5s ease,
+          left 2.5s ease;
+        cursor: pointer; /* 点击互动提示 */
+        z-index: 10;
+      }
+
+      /* 不同颜色的鱼 */
+      .fish-yellow .fish-body {
+        background: linear-gradient(#e9c46a, #f4a261);
+      }
+      .fish-yellow .fish-tail {
+        background: linear-gradient(#e76f51, #f4a261);
+      }
+
+      .fish-blue .fish-body {
+        background: linear-gradient(#4cc9f0, #4361ee);
+      }
+      .fish-blue .fish-tail {
+        background: linear-gradient(#3a0ca3, #4361ee);
+      }
+
+      .fish-red .fish-body {
+        background: linear-gradient(#f72585, #b5179e);
+      }
+      .fish-red .fish-tail {
+        background: linear-gradient(#7209b7, #b5179e);
+      }
+
+      /* 鱼身（带高光） */
+      .fish-body {
+        position: absolute;
+        width: 60px;
+        height: 40px;
+        border-radius: 50% 70% 70% 50%;
+        box-shadow: inset 5px 0 10px rgba(255, 255, 255, 0.3);
+      }
+
+      /* 鱼尾（更灵动的摆动） */
+      .fish-tail {
+        position: absolute;
+        right: -20px;
+        top: 10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 0 50% 50% 0;
+        animation: tail-swing 0.4s ease-in-out infinite alternate;
+      }
+
+      @keyframes tail-swing {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(15deg);
+        }
+      }
+
+      /* 鱼眼（带高光） */
+      .fish-eye {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 8px;
+        height: 8px;
+        background: #000;
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .fish-eye::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 2px;
+        width: 3px;
+        height: 3px;
+        background: #fff;
+        border-radius: 50%;
+      }
+
+      /* 鱼鳍 */
+      .fish-fin {
+        position: absolute;
+        top: 15px;
+        left: 25px;
+        width: 15px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        animation: fin-swing 0.8s ease-in-out infinite alternate;
+      }
+
+      @keyframes fin-swing {
+        0% {
+          transform: rotate(-5deg);
+        }
+        100% {
+          transform: rotate(5deg);
+        }
+      }
+
+      /* 气泡（更真实的大小变化） */
+      .bubble {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        animation: rise 5s ease-in-out forwards;
+        box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.8);
+      }
+
+      @keyframes rise {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        80% {
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-70vh) scale(0.5);
+          opacity: 0;
+        }
+      }
+
+      /* 鱼食样式 */
+      .fish-food {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: #f1faee;
+        border-radius: 50%;
+        animation: food-sink 3s ease-in-out forwards;
+      }
+
+      @keyframes food-sink {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(70vh - 70px);
+          opacity: 0;
+        }
+      }
+
+      /* 互动提示文字 */
+      .hint {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 返回头部栏 -->
+    <header class="header" id="header">
+      <div class="header__icon">🐟</div>
+      <h1 class="header__title">
+        <span class="header__title-line1">唐琛的鱼缸!</span>
+        <span class="header__title-line2">Fish tank(Improving....)</span>
+      </h1>
+      <a href="../index.html" class="back-btn" title="Back">🏠 Back to Index</a>
+    </header>
+
+    <!-- 鱼缸主体 -->
+    <div class="fish-tank">
+      <!-- 互动提示 -->
+      <div class="hint">点击鱼缸投喂鱼食 | 点击鱼让它加速游动</div>
+
+      <!-- 水底沙子 -->
+      <div class="sand"></div>
+
+      <!-- 装饰元素 -->
+      <div class="seaweed seaweed-1"></div>
+      <div class="seaweed seaweed-2"></div>
+      <div class="seaweed seaweed-3"></div>
+      <div class="seaweed seaweed-4"></div>
+      <div class="stone"></div>
+      <div class="stone stone-small"></div>
+
+      <!-- 不同颜色的鱼 -->
+      <div class="fish fish-yellow" style="top: 200px; left: 300px">
+        <div class="fish-body"></div>
+        <div class="fish-tail"></div>
+        <div class="fish-eye"></div>
+        <div class="fish-fin"></div>
+      </div>
+      <div
+        class="fish fish-blue"
+        style="top: 300px; left: 500px; transform: scaleX(-1)"
+      >
+        <div class="fish-body"></div>
+        <div class="fish-tail"></div>
+        <div class="fish-eye"></div>
+        <div class="fish-fin"></div>
+      </div>
+      <div class="fish fish-red" style="top: 150px; left: 700px">
+        <div class="fish-body"></div>
+        <div class="fish-tail"></div>
+        <div class="fish-eye"></div>
+        <div class="fish-fin"></div>
+      </div>
+    </div>
+
+    <script>
+      // 获取核心元素
+      const tank = document.querySelector(".fish-tank");
+      const fishes = document.querySelectorAll(".fish");
+      const tankWidth = tank.offsetWidth;
+      const tankHeight = tank.offsetHeight;
+
+      // 1. 增强版气泡生成（更自然的分布）
+      function createBubble() {
+        const bubble = document.createElement("div");
+        bubble.classList.add("bubble");
+
+        // 随机位置（避开左右边界）
+        const left = Math.random() * (tankWidth - 80) + 40;
+        bubble.style.left = `${left}px`;
+        bubble.style.bottom = `${Math.random() * 100 + 60}px`;
+
+        // 随机大小（2-18px）
+        const size = Math.random() * 16 + 2;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+
+        // 随机上升速度（3-8秒）
+        const duration = Math.random() * 5 + 3;
+        bubble.style.animationDuration = `${duration}s`;
+
+        tank.appendChild(bubble);
+
+        // 气泡消失后移除
+        setTimeout(() => {
+          bubble.remove();
+        }, duration * 1000);
+      }
+
+      // 随机间隔生成气泡（0.5-2秒）
+      setInterval(createBubble, Math.random() * 1500 + 500);
+
+      // 2. 鱼随机游动（更智能的边界检测）
+      function moveFishRandomly(fish = null) {
+        // 可选：只移动指定鱼，否则移动所有鱼
+        const targetFishes = fish ? [fish] : fishes;
+
+        targetFishes.forEach((fish) => {
+          // 随机目标位置（严格避开边界）
+          const targetX = Math.random() * (tankWidth - 120) + 60;
+          const targetY = Math.random() * (tankHeight - 180) + 60;
+
+          // 调整鱼的朝向
+          const currentX = parseFloat(fish.style.left) || 0;
+          fish.style.transform =
+            targetX > currentX ? "scaleX(1)" : "scaleX(-1)";
+
+          // 移动到目标位置（如果是点击触发，加速移动）
+          const speed = fish.dataset.speed ? "0.8s" : "2.5s";
+          fish.style.transition = `top ${speed} ease, left ${speed} ease`;
+          fish.style.left = `${targetX}px`;
+          fish.style.top = `${targetY}px`;
+
+          // 清除加速标记
+          delete fish.dataset.speed;
+        });
+      }
+
+      // 全局随机游动（4-7秒）
+      setInterval(() => moveFishRandomly(), Math.random() * 3000 + 4000);
+
+      // 3. 点击鱼：加速游动
+      fishes.forEach((fish) => {
+        fish.addEventListener("click", () => {
+          fish.dataset.speed = "fast"; // 标记加速
+          moveFishRandomly(fish);
+          // 点击时生成小气泡
+          const rect = fish.getBoundingClientRect();
+          const tankRect = tank.getBoundingClientRect();
+          const bubble = document.createElement("div");
+          bubble.classList.add("bubble");
+          bubble.style.left = `${rect.left - tankRect.left + 20}px`;
+          bubble.style.top = `${rect.top - tankRect.top + 20}px`;
+          bubble.style.width = "8px";
+          bubble.style.height = "8px";
+          bubble.style.animationDuration = "2s";
+          tank.appendChild(bubble);
+          setTimeout(() => bubble.remove(), 2000);
+        });
+      });
+
+      // 4. 点击鱼缸：投喂鱼食
+      tank.addEventListener("click", (e) => {
+        const rect = tank.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        // 生成10-15粒鱼食
+        const foodCount = Math.floor(Math.random() * 6) + 10;
+        for (let i = 0; i < foodCount; i++) {
+          const food = document.createElement("div");
+          food.classList.add("fish-food");
+
+          // 鱼食分散分布
+          const offsetX = Math.random() * 40 - 20;
+          const offsetY = Math.random() * 20 - 10;
+          food.style.left = `${clickX + offsetX}px`;
+          food.style.top = `${clickY + offsetY}px`;
+
+          // 随机下沉速度
+          const duration = Math.random() * 2 + 2;
+          food.style.animationDuration = `${duration}s`;
+
+          tank.appendChild(food);
+
+          // 鱼食沉底后移除
+          setTimeout(() => {
+            food.remove();
+            // 鱼食沉底后，鱼会游向食物位置
+            fishes.forEach((fish) => {
+              setTimeout(() => {
+                fish.style.left = `${clickX + offsetX - 40}px`;
+                fish.style.top = `${tankHeight - 100 + Math.random() * 20}px`;
+                fish.style.transform =
+                  clickX > parseFloat(fish.style.left)
+                    ? "scaleX(1)"
+                    : "scaleX(-1)";
+              }, Math.random() * 1000);
+            });
+          }, duration * 1000);
+        }
+      });
+
+      // 初始化
+      moveFishRandomly();
+    </script>
+  </body>
+</html>

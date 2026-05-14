@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音乐 - 小汤圆的快乐小屋</title>
+    <style>
+      /* 全局样式和小说页完全统一 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: none !important;
+      }
+      body {
+        background-color: #f9f7f8;
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        display: flex;
+        min-height: 100vh;
+      }
+      /* 侧边栏（和小说页一样） */
+      .cebian {
+        width: 200px;
+        background-color: #ffffff;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 12px !important;
+        margin: 10px;
+        padding: 16px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+      }
+      .avatar-box {
+        display: flex;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e8e2e9 !important;
+        margin-bottom: 16px;
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #f3edf7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7c3aed;
+        font-size: 18px;
+      }
+      .nickname {
+        margin-left: 12px;
+        font-size: 18px;
+        color: #5a4b60;
+        font-weight: 500;
+      }
+      .nav-list {
+        list-style: none;
+      }
+      .nav-item {
+        margin-bottom: 8px;
+      }
+      .nav-link {
+        display: block;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #5a4b60;
+        font-size: 16px;
+        border-radius: 8px !important;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+      .nav-link.active {
+        background-color: #ede9fe !important;
+        color: #7c3aed !important;
+        font-weight: 500;
+      }
+      .nav-link:hover {
+        background-color: #f3edf7 !important;
+        color: #8b5cf6 !important;
+      }
+      /* 主内容区 */
+      .main-content {
+        flex: 1;
+        margin: 10px;
+        padding: 20px;
+      }
+      /* 上传区域 */
+      .upload-box {
+        background-color: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+        margin-bottom: 20px;
+      }
+      .upload-title {
+        font-size: 20px;
+        color: #7c3aed;
+        margin-bottom: 16px;
+      }
+      .form-item {
+        margin-bottom: 12px;
+      }
+      .form-label {
+        display: block;
+        margin-bottom: 4px;
+        color: #5a4b60;
+        font-size: 14px;
+      }
+      input[type="text"],
+      input[type="file"] {
+        width: 300px;
+        padding: 8px;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 6px;
+      }
+      .upload-btn {
+        padding: 8px 20px;
+        background-color: #7c3aed;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        border: none;
+      }
+      .message-box {
+        margin-top: 12px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: none;
+      }
+      .message-box.success {
+        background-color: #dcfce7;
+        color: #16a34a;
+        display: block;
+      }
+      .message-box.error {
+        background-color: #fee2e2;
+        color: #dc2626;
+        display: block;
+      }
+      /* 音乐列表 */
+      .music-list {
+        background-color: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+      }
+      .list-title {
+        font-size: 20px;
+        color: #7c3aed;
+        margin-bottom: 16px;
+      }
+      .music-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid #e8e2e9 !important;
+      }
+      .music-info {
+        flex: 1;
+      }
+      .music-title {
+        font-size: 16px;
+        color: #4a3f4d;
+        font-weight: 500;
+      }
+      .music-singer {
+        font-size: 12px;
+        color: #917899;
+      }
+      .music-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .play-btn,
+      .delete-btn {
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        border: none;
+      }
+      .play-btn {
+        background-color: #ede9fe;
+        color: #7c3aed;
+      }
+      .delete-btn {
+        background-color: #fee2e2;
+        color: #dc2626;
+      }
+      /* 播放器 */
+      .player {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        padding: 12px;
+        border-top: 1px solid #e8e2e9 !important;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        display: none;
+      }
+      .player.show {
+        display: block;
+      }
+      .player-info {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      .player-title {
+        font-size: 16px;
+        color: #7c3aed;
+      }
+      audio {
+        width: 100%;
+        max-width: 800px;
+        display: block;
+        margin: 0 auto;
+      }
+      .empty-tip {
+        text-align: center;
+        padding: 40px;
+        color: #917899;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 侧边栏 -->
+    <div class="cebian">
+      <div class="avatar-box">
+        <div class="avatar">汤</div>
+        <div class="nickname">小汤圆</div>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">首页</a>
+        </li>
+        <li class="nav-item">
+          <a href="../novel/novel.html" class="nav-link">小说</a>
+        </li>
+        <li class="nav-item">
+          <a href="./music.html" class="nav-link active">音乐</a>
+        </li>
+        <li class="nav-item">
+          <a href="../anime/anime.html" class="nav-link">动漫</a>
+        </li>
+        <li class="nav-item">
+          <a href="../video/video.html" class="nav-link">视频</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <!-- 上传区域 -->
+      <div class="upload-box">
+        <h3 class="upload-title">上传音乐</h3>
+        <div class="form-item">
+          <label class="form-label">歌曲名：</label>
+          <input type="text" id="musicTitle" placeholder="例如：七里香" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">歌手：</label>
+          <input type="text" id="musicSinger" placeholder="例如：周杰伦" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">选择音频文件：</label>
+          <input type="file" id="musicFile" accept=".mp3,.wav,.flac,.m4a" />
+        </div>
+        <button class="upload-btn" onclick="uploadMusic()">上传</button>
+        <div id="uploadMessage" class="message-box"></div>
+      </div>
+
+      <!-- 音乐列表 -->
+      <div class="music-list">
+        <h3 class="list-title">我的音乐库</h3>
+        <div id="musicList">
+          <div class="empty-tip">加载中...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部播放器 -->
+    <div class="player" id="musicPlayer">
+      <div class="player-info">
+        <div class="player-title" id="playerTitle">正在播放：暂无音乐</div>
+      </div>
+      <audio id="audioPlayer" controls autoplay></audio>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5000/api/music";
+      const uploadMessageEl = document.getElementById("uploadMessage");
+      const musicListEl = document.getElementById("musicList");
+      const musicPlayerEl = document.getElementById("musicPlayer");
+      const audioPlayerEl = document.getElementById("audioPlayer");
+      const playerTitleEl = document.getElementById("playerTitle");
+
+      // 页面加载获取音乐列表
+      window.onload = loadMusicList;
+
+      // 加载音乐列表
+      async function loadMusicList() {
+        try {
+          const res = await fetch(`${API_BASE}/list`);
+          const result = await res.json();
+
+          if (result.success && result.data.length > 0) {
+            let html = "";
+            result.data.forEach((music) => {
+              html += `
+              <div class="music-item">
+                <div class="music-info">
+                  <div class="music-title">${music.title}</div>
+                  <div class="music-singer">${music.singer}</div>
+                </div>
+                <div class="music-actions">
+                  <button class="play-btn" onclick="playMusic(${music.id}, '${music.title}', '${music.singer}')">播放</button>
+                  <button class="delete-btn" onclick="deleteMusic(${music.id})">删除</button>
+                </div>
+              </div>
+            `;
+            });
+            musicListEl.innerHTML = html;
+          } else {
+            musicListEl.innerHTML =
+              '<div class="empty-tip">暂无音乐，快去上传吧～</div>';
+          }
+        } catch (err) {
+          musicListEl.innerHTML = `<div class="empty-tip">❌ 加载失败：${err.message}</div>`;
+        }
+      }
+
+      // 上传音乐
+      async function uploadMusic() {
+        const title = document.getElementById("musicTitle").value.trim();
+        const singer = document.getElementById("musicSinger").value.trim();
+        const file = document.getElementById("musicFile").files[0];
+
+        if (!title) {
+          showMessage("请输入歌曲名！", "error");
+          return;
+        }
+        if (!singer) {
+          showMessage("请输入歌手名！", "error");
+          return;
+        }
+        if (!file) {
+          showMessage("请选择音频文件！", "error");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("singer", singer);
+        formData.append("musicFile", file);
+
+        try {
+          const res = await fetch(`${API_BASE}/upload`, {
+            method: "POST",
+            body: formData,
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            showMessage(result.message, "success");
+            // 清空输入框
+            document.getElementById("musicTitle").value = "";
+            document.getElementById("musicSinger").value = "";
+            document.getElementById("musicFile").value = "";
+            // 重新加载列表
+            loadMusicList();
+          } else {
+            showMessage(result.message, "error");
+          }
+        } catch (err) {
+          showMessage("上传失败：" + err.message, "error");
+        }
+      }
+
+      // 播放音乐
+      function playMusic(id, title, singer) {
+        // 设置播放地址
+        audioPlayerEl.src = `${API_BASE}/play/${id}`;
+        // 显示播放器
+        musicPlayerEl.classList.add("show");
+        // 更新播放标题
+        playerTitleEl.textContent = `正在播放：${title} - ${singer}`;
+        // 播放
+        audioPlayerEl.play();
+      }
+
+      // 删除音乐
+      async function deleteMusic(id) {
+        if (!confirm("确定要删除这首音乐吗？删除后无法恢复！")) return;
+
+        try {
+          const res = await fetch(`${API_BASE}/delete/${id}`, {
+            method: "DELETE",
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            alert(result.message);
+            loadMusicList();
+            // 如果删除的是正在播放的音乐，停止播放
+            if (audioPlayerEl.src.includes(`/play/${id}`)) {
+              audioPlayerEl.pause();
+              audioPlayerEl.src = "";
+              musicPlayerEl.classList.remove("show");
+            }
+          } else {
+            alert(result.message);
+          }
+        } catch (err) {
+          alert("删除失败：" + err.message);
+        }
+      }
+
+      // 显示提示信息
+      function showMessage(text, type) {
+        uploadMessageEl.textContent = text;
+        uploadMessageEl.className = `message-box ${type}`;
+        setTimeout(() => {
+          uploadMessageEl.className = "message-box";
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

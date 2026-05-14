@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>视频播放 - 小汤圆的快乐小屋</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: none !important;
+      }
+      body {
+        background-color: #f9f7f8;
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        display: flex;
+        min-height: 100vh;
+      }
+      /* 侧边栏（和你网站保持一致） */
+      .cebian {
+        width: 200px;
+        background-color: #ffffff;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 12px !important;
+        margin: 10px;
+        padding: 16px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+      }
+      .avatar-box {
+        display: flex;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e8e2e9 !important;
+        margin-bottom: 16px;
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #f3edf7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7c3aed;
+        font-size: 18px;
+      }
+      .nickname {
+        margin-left: 12px;
+        font-size: 18px;
+        color: #5a4b60;
+        font-weight: 500;
+      }
+      .nav-list {
+        list-style: none;
+      }
+      .nav-item {
+        margin-bottom: 8px;
+      }
+      .nav-link {
+        display: block;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #5a4b60;
+        font-size: 16px;
+        border-radius: 8px !important;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+      .nav-link.active {
+        background-color: #ede9fe !important;
+        color: #7c3aed !important;
+        font-weight: 500;
+      }
+      .nav-link:hover {
+        background-color: #f3edf7 !important;
+        color: #8b5cf6 !important;
+      }
+      /* 主内容区 */
+      .main-content {
+        flex: 1;
+        margin: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      /* 播放容器 */
+      .play-container {
+        background-color: #fff;
+        padding: 32px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+        max-width: 800px;
+        width: 100%;
+        text-align: center;
+      }
+      .play-title {
+        font-size: 32px;
+        color: #7c3aed;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e8e2e9 !important;
+      }
+      /* 视频区域（关键修复：圆角+正常显示） */
+      .video-wrapper {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%; /* 16:9 比例 */
+        background-color: #000;
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 32px;
+      }
+      video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      /* 底部时间栏（和你截图一致） */
+      .time-bar {
+        background-color: #f1f1f1;
+        border-radius: 24px;
+        padding: 12px 24px;
+        max-width: 600px;
+        margin: 0 auto 32px;
+        font-size: 18px;
+        color: #333;
+      }
+      .back-btn {
+        padding: 12px 32px;
+        background-color: #7c3aed;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        text-decoration: none;
+      }
+      .error-tip {
+        text-align: center;
+        padding: 40px;
+        color: #dc2626;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 侧边栏 -->
+    <div class="cebian">
+      <div class="avatar-box">
+        <div class="avatar">汤</div>
+        <div class="nickname">小汤圆</div>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">首页</a>
+        </li>
+        <li class="nav-item">
+          <a href="../novel/novel.html" class="nav-link">小说</a>
+        </li>
+        <li class="nav-item">
+          <a href="../music/music.html" class="nav-link">音乐</a>
+        </li>
+        <li class="nav-item">
+          <a href="../anime/anime.html" class="nav-link">动漫</a>
+        </li>
+        <li class="nav-item">
+          <a href="./video.html" class="nav-link active">视频</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <div id="playContent">
+        <div class="error-tip">加载中...</div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5000/api/video";
+      const playContentEl = document.getElementById("playContent");
+      let videoEl;
+      let timeBarEl;
+
+      window.onload = loadVideoPlay;
+
+      async function loadVideoPlay() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
+
+        if (!id || isNaN(id)) {
+          playContentEl.innerHTML =
+            '<div class="error-tip">❌ 无效的视频ID</div>';
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_BASE}/list`);
+          const result = await res.json();
+
+          if (result.success) {
+            const video = result.data.find((item) => item.id == id);
+            if (!video) {
+              playContentEl.innerHTML =
+                '<div class="error-tip">❌ 未找到该视频</div>';
+              return;
+            }
+
+            // 渲染页面：视频 + 原生控件 + 底部时间
+            playContentEl.innerHTML = `
+            <div class="play-container">
+              <h1 class="play-title">${video.title}</h1>
+              
+              <div class="video-wrapper">
+                <!-- 关键：加了 controls 属性，让浏览器自带播放控件 -->
+                <video id="videoPlayer" src="${API_BASE}/play/${video.id}" controls autoplay></video>
+              </div>
+              
+              <div class="time-bar" id="timeBar">0:00 / 0:00</div>
+              
+              <a href="./video.html" class="back-btn">返回视频列表</a>
+            </div>
+          `;
+
+            videoEl = document.getElementById("videoPlayer");
+            timeBarEl = document.getElementById("timeBar");
+
+            // 更新时间显示
+            videoEl.addEventListener("timeupdate", updateTime);
+            videoEl.addEventListener("loadedmetadata", updateTime);
+          } else {
+            playContentEl.innerHTML = `<div class="error-tip">❌ ${result.message}</div>`;
+          }
+        } catch (err) {
+          playContentEl.innerHTML = `<div class="error-tip">❌ 加载失败：${err.message}</div>`;
+        }
+      }
+
+      function updateTime() {
+        const current = formatTime(videoEl.currentTime);
+        const duration = formatTime(videoEl.duration);
+        timeBarEl.textContent = `${current} / ${duration}`;
+      }
+
+      function formatTime(seconds) {
+        if (isNaN(seconds)) return "0:00";
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60);
+        return `${min}:${sec < 10 ? "0" : ""}${sec}`;
+      }
+    </script>
+  </body>
+</html>

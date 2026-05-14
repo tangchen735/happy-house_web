@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>视频 - 小汤圆的快乐小屋</title>
+    <style>
+      /* 全局样式统一 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: none !important;
+      }
+      body {
+        background-color: #f9f7f8;
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        display: flex;
+        min-height: 100vh;
+      }
+      /* 侧边栏 */
+      .cebian {
+        width: 200px;
+        background-color: #ffffff;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 12px !important;
+        margin: 10px;
+        padding: 16px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+      }
+      .avatar-box {
+        display: flex;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e8e2e9 !important;
+        margin-bottom: 16px;
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #f3edf7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7c3aed;
+        font-size: 18px;
+      }
+      .nickname {
+        margin-left: 12px;
+        font-size: 18px;
+        color: #5a4b60;
+        font-weight: 500;
+      }
+      .nav-list {
+        list-style: none;
+      }
+      .nav-item {
+        margin-bottom: 8px;
+      }
+      .nav-link {
+        display: block;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #5a4b60;
+        font-size: 16px;
+        border-radius: 8px !important;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+      .nav-link.active {
+        background-color: #ede9fe !important;
+        color: #7c3aed !important;
+        font-weight: 500;
+      }
+      .nav-link:hover {
+        background-color: #f3edf7 !important;
+        color: #8b5cf6 !important;
+      }
+      /* 主内容区 */
+      .main-content {
+        flex: 1;
+        margin: 10px;
+        padding: 20px;
+      }
+      /* 上传区域 */
+      .upload-box {
+        background-color: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+        margin-bottom: 20px;
+      }
+      .upload-title {
+        font-size: 20px;
+        color: #7c3aed;
+        margin-bottom: 16px;
+      }
+      .form-item {
+        margin-bottom: 12px;
+      }
+      .form-label {
+        display: block;
+        margin-bottom: 4px;
+        color: #5a4b60;
+        font-size: 14px;
+      }
+      input[type="text"],
+      input[type="file"] {
+        width: 300px;
+        padding: 8px;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 6px;
+      }
+      .upload-btn {
+        padding: 8px 20px;
+        background-color: #7c3aed;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        border: none;
+      }
+      .message-box {
+        margin-top: 12px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: none;
+      }
+      .message-box.success {
+        background-color: #dcfce7;
+        color: #16a34a;
+        display: block;
+      }
+      .message-box.error {
+        background-color: #fee2e2;
+        color: #dc2626;
+        display: block;
+      }
+      /* 视频列表 */
+      .video-list {
+        background-color: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+      }
+      .list-title {
+        grid-column: 1 / -1;
+        font-size: 20px;
+        color: #7c3aed;
+        margin-bottom: 16px;
+      }
+      .video-card {
+        background-color: #f9f7f8;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+        transition: transform 0.2s ease;
+      }
+      .video-card:hover {
+        transform: translateY(-5px);
+      }
+      .video-cover {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+      }
+      .video-info {
+        padding: 12px;
+      }
+      .video-title {
+        font-size: 16px;
+        color: #4a3f4d;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+      .video-actions {
+        display: flex;
+        justify-content: space-between;
+      }
+      .play-btn,
+      .delete-btn {
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        border: none;
+        text-decoration: none;
+      }
+      .play-btn {
+        background-color: #ede9fe;
+        color: #7c3aed;
+      }
+      .delete-btn {
+        background-color: #fee2e2;
+        color: #dc2626;
+      }
+      .empty-tip {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        color: #917899;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 侧边栏 -->
+    <div class="cebian">
+      <div class="avatar-box">
+        <div class="avatar">汤</div>
+        <div class="nickname">小汤圆</div>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">首页</a>
+        </li>
+        <li class="nav-item">
+          <a href="../novel/novel.html" class="nav-link">小说</a>
+        </li>
+        <li class="nav-item">
+          <a href="../music/music.html" class="nav-link">音乐</a>
+        </li>
+        <li class="nav-item">
+          <a href="../anime/anime.html" class="nav-link">动漫</a>
+        </li>
+        <li class="nav-item">
+          <a href="./video.html" class="nav-link active">视频</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <!-- 上传区域 -->
+      <div class="upload-box">
+        <h3 class="upload-title">上传视频</h3>
+        <div class="form-item">
+          <label class="form-label">视频标题：</label>
+          <input type="text" id="videoTitle" placeholder="例如：旅行vlog" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">选择视频文件：</label>
+          <input type="file" id="videoFile" accept=".mp4,.avi,.mov,.mkv" />
+        </div>
+        <div class="form-item">
+          <label class="form-label">选择封面图片（可选）：</label>
+          <input type="file" id="coverFile" accept=".jpg,.jpeg,.png,.webp" />
+        </div>
+        <button class="upload-btn" onclick="uploadVideo()">上传</button>
+        <div id="uploadMessage" class="message-box"></div>
+      </div>
+
+      <!-- 视频列表 -->
+      <div class="video-list">
+        <h3 class="list-title">我的视频库</h3>
+        <div id="videoList">
+          <div class="empty-tip">加载中...</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5000/api/video";
+      const uploadMessageEl = document.getElementById("uploadMessage");
+      const videoListEl = document.getElementById("videoList");
+
+      // 页面加载获取视频列表
+      window.onload = loadVideoList;
+
+      // 加载视频列表
+      async function loadVideoList() {
+        try {
+          const res = await fetch(`${API_BASE}/list`);
+          const result = await res.json();
+
+          if (result.success && result.data.length > 0) {
+            let html = "";
+            result.data.forEach((video) => {
+              // 封面地址（有封面用封面，无则用占位图）
+              const coverSrc = video.cover_path
+                ? `${API_BASE}/cover/${video.id}`
+                : "https://via.placeholder.com/280x160?text=暂无封面";
+
+              html += `
+              <div class="video-card">
+                <img src="${coverSrc}" alt="${video.title}" class="video-cover" onerror="this.src='https://via.placeholder.com/280x160?text=暂无封面'">
+                <div class="video-info">
+                  <div class="video-title">${video.title}</div>
+                  <div class="video-actions">
+                    <a href="./play.html?id=${video.id}" class="play-btn">播放</a>
+                    <button class="delete-btn" onclick="deleteVideo(${video.id})">删除</button>
+                  </div>
+                </div>
+              </div>
+            `;
+            });
+            videoListEl.innerHTML = html;
+          } else {
+            videoListEl.innerHTML =
+              '<div class="empty-tip">暂无视频，快去上传吧～</div>';
+          }
+        } catch (err) {
+          videoListEl.innerHTML = `<div class="empty-tip">❌ 加载失败：${err.message}</div>`;
+        }
+      }
+
+      // 上传视频
+      async function uploadVideo() {
+        const title = document.getElementById("videoTitle").value.trim();
+        const videoFile = document.getElementById("videoFile").files[0];
+        const coverFile = document.getElementById("coverFile").files[0];
+
+        if (!title) {
+          showMessage("请输入视频标题！", "error");
+          return;
+        }
+        if (!videoFile) {
+          showMessage("请选择视频文件！", "error");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("videoFile", videoFile);
+        if (coverFile) {
+          formData.append("coverFile", coverFile);
+        }
+
+        try {
+          const res = await fetch(`${API_BASE}/upload`, {
+            method: "POST",
+            body: formData,
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            showMessage(result.message, "success");
+            // 清空输入框
+            document.getElementById("videoTitle").value = "";
+            document.getElementById("videoFile").value = "";
+            document.getElementById("coverFile").value = "";
+            // 重新加载列表
+            loadVideoList();
+          } else {
+            showMessage(result.message, "error");
+          }
+        } catch (err) {
+          showMessage("上传失败：" + err.message, "error");
+        }
+      }
+
+      // 删除视频
+      async function deleteVideo(id) {
+        if (!confirm("确定要删除这个视频吗？删除后无法恢复！")) return;
+
+        try {
+          const res = await fetch(`${API_BASE}/delete/${id}`, {
+            method: "DELETE",
+          });
+          const result = await res.json();
+
+          if (result.success) {
+            alert(result.message);
+            loadVideoList();
+          } else {
+            alert(result.message);
+          }
+        } catch (err) {
+          alert("删除失败：" + err.message);
+        }
+      }
+
+      // 显示提示信息
+      function showMessage(text, type) {
+        uploadMessageEl.textContent = text;
+        uploadMessageEl.className = `message-box ${type}`;
+        setTimeout(() => {
+          uploadMessageEl.className = "message-box";
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

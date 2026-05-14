@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音乐播放 - 小汤圆的快乐小屋</title>
+    <style>
+      /* 全局样式统一 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: none !important;
+      }
+      body {
+        background-color: #f9f7f8;
+        font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        display: flex;
+        min-height: 100vh;
+      }
+      /* 侧边栏 */
+      .cebian {
+        width: 200px;
+        background-color: #ffffff;
+        border: 1px solid #e8e2e9 !important;
+        border-radius: 12px !important;
+        margin: 10px;
+        padding: 16px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+      }
+      .avatar-box {
+        display: flex;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e8e2e9 !important;
+        margin-bottom: 16px;
+      }
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #f3edf7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7c3aed;
+        font-size: 18px;
+      }
+      .nickname {
+        margin-left: 12px;
+        font-size: 18px;
+        color: #5a4b60;
+        font-weight: 500;
+      }
+      .nav-list {
+        list-style: none;
+      }
+      .nav-item {
+        margin-bottom: 8px;
+      }
+      .nav-link {
+        display: block;
+        padding: 12px 16px;
+        text-decoration: none;
+        color: #5a4b60;
+        font-size: 16px;
+        border-radius: 8px !important;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+      .nav-link.active {
+        background-color: #ede9fe !important;
+        color: #7c3aed !important;
+        font-weight: 500;
+      }
+      .nav-link:hover {
+        background-color: #f3edf7 !important;
+        color: #8b5cf6 !important;
+      }
+      /* 主内容区 */
+      .main-content {
+        flex: 1;
+        margin: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      /* 播放容器 */
+      .play-container {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important;
+        max-width: 600px;
+        width: 100%;
+        text-align: center;
+      }
+      .music-cover {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-color: #f3edf7;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7c3aed;
+        font-size: 48px;
+      }
+      .music-title {
+        font-size: 28px;
+        color: #7c3aed;
+        margin-bottom: 8px;
+      }
+      .music-singer {
+        font-size: 18px;
+        color: #917899;
+        margin-bottom: 24px;
+      }
+      audio {
+        width: 100%;
+        margin-bottom: 24px;
+      }
+      .back-btn {
+        padding: 8px 20px;
+        background-color: #7c3aed;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        border: none;
+        text-decoration: none;
+      }
+      .error-tip {
+        text-align: center;
+        padding: 40px;
+        color: #dc2626;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 侧边栏 -->
+    <div class="cebian">
+      <div class="avatar-box">
+        <div class="avatar">汤</div>
+        <div class="nickname">小汤圆</div>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">首页</a>
+        </li>
+        <li class="nav-item">
+          <a href="../novel/novel.html" class="nav-link">小说</a>
+        </li>
+        <li class="nav-item">
+          <a href="./music.html" class="nav-link active">音乐</a>
+        </li>
+        <li class="nav-item">
+          <a href="../anime/anime.html" class="nav-link">动漫</a>
+        </li>
+        <li class="nav-item">
+          <a href="../video/video.html" class="nav-link">视频</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <div id="playContent">
+        <div class="error-tip">加载中...</div>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5000/api/music";
+      const playContentEl = document.getElementById("playContent");
+
+      // 页面加载获取音乐播放信息
+      window.onload = loadMusicPlay;
+
+      // 加载音乐播放
+      async function loadMusicPlay() {
+        // 获取URL中的ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
+
+        if (!id || isNaN(id)) {
+          playContentEl.innerHTML =
+            '<div class="error-tip">❌ 无效的音乐ID</div>';
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_BASE}/list`);
+          const result = await res.json();
+
+          if (result.success) {
+            const music = result.data.find((item) => item.id == id);
+            if (!music) {
+              playContentEl.innerHTML =
+                '<div class="error-tip">❌ 未找到该音乐</div>';
+              return;
+            }
+
+            // 渲染播放页面
+            playContentEl.innerHTML = `
+            <div class="play-container">
+              <div class="music-cover">🎵</div>
+              <h1 class="music-title">${music.title}</h1>
+              <div class="music-singer">${music.singer}</div>
+              <audio controls autoplay>
+                <source src="${API_BASE}/play/${music.id}" type="audio/mpeg">
+                您的浏览器不支持HTML5音频播放，请升级浏览器！
+              </audio>
+              <a href="./music.html" class="back-btn">返回音乐列表</a>
+            </div>
+          `;
+          } else {
+            playContentEl.innerHTML = `<div class="error-tip">❌ ${result.message}</div>`;
+          }
+        } catch (err) {
+          playContentEl.innerHTML = `<div class="error-tip">❌ 加载失败：${err.message}</div>`;
+        }
+      }
+    </script>
+  </body>
+</html>
