@@ -1,0 +1,228 @@
+/* wheel.css - 文字沿弧边排列最终版 */
+@import url(https://fonts.googleapis.com/css2?family=PingFang+SC:wght@400;500&display=swap);
+@layer demo, wheel-base;
+
+@layer demo {
+  :root {
+    --wheel-items: 12;
+    --wheel-slice-angle: calc(360deg / var(--wheel-items));
+    --wheel-radius: min(20vw, 150px); 
+    --wheel-size: calc(var(--wheel-radius) * 2);
+    --wheel-text-radius: calc(var(--wheel-radius) - 20px); /* 文字弧边半径 */
+
+    /* 生活化柔和绿色系 */
+    --wheel-bg-1: #f0f9eb;
+    --wheel-bg-2: #e6f4ea;
+    --wheel-bg-3: #d1fae5;
+    --wheel-bg-4: #a7f3d0;
+    --wheel-marker-bg: #65a30d;
+    --wheel-btn-text: white;
+
+    --wheel-spin-duration: 2s;
+    --wheel-random-angle: 4800deg;
+    @supports (rotate: random(1deg, 10deg)) {
+      --wheel-spin-duration: random(1000ms, 3000ms);
+      --wheel-random-angle: random(1200deg, 4800deg, var(--wheel-slice-angle));
+    }
+  }
+
+  /* 转盘容器 */
+  .wheel-wrapper {
+    position: relative;
+    width: var(--wheel-size);
+    aspect-ratio: 1;
+    margin: 10px auto;
+    flex-shrink: 0;
+  }
+
+  /* 隐藏复选框 */
+  .wheel-wrapper input[type=checkbox] {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+  }
+
+  /* 复选框选中状态 */
+  .wheel-wrapper:has(input[type=checkbox]:checked) {
+    --wheel-spin-it: 1;
+    --wheel-btn-spin-scale: 0;
+    --wheel-btn-spin-event: none;
+    --wheel-btn-spin-trans-duration: var(--wheel-spin-duration);
+    --wheel-btn-reset-scale: 1;
+    --wheel-btn-reset-event: auto;
+    --wheel-btn-reset-trans-delay: var(--wheel-spin-duration);
+  }
+
+  /* 中心按钮+箭头（精准居中） */
+  .wheel-controls {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(50px, 10vw);
+    aspect-ratio: 1;
+    background: var(--wheel-marker-bg);
+    border-radius: 999px;
+    transition: scale 150ms ease-in-out;
+  }
+
+  .wheel-controls:has(:hover, :focus-visible) label {
+    scale: 1.2;
+    rotate: 20deg;
+  }
+
+  /* 箭头指针（精准指向正下方） */
+  .wheel-controls::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% -50%;
+    width: 20%;
+    aspect-ratio: 2/10;
+    background: transparent;
+    border: 1vw solid var(--wheel-marker-bg);
+    border-bottom-width: 2vw;
+    border-top: 0;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    z-index: -1;
+    rotate: 180deg;
+  }
+
+  /* 旋转/重置按钮 */
+  .wheel-controls label {
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+    color: var(--wheel-btn-text);
+    transition: rotate 150ms ease-in-out, scale 150ms ease-in-out;
+  }
+
+  .wheel-controls svg {
+    grid-area: 1/1;
+    width: 50%;
+    height: 50%;
+    transition-property: scale;
+    transition-timing-function: ease-in-out;
+  }
+
+  .wheel-controls svg:first-child {
+    transition-duration: var(--wheel-btn-spin-trans-duration, 150ms);
+    scale: var(--wheel-btn-spin-scale, 1);
+    pointer-events: var(--wheel-btn-spin-event, auto);
+  }
+
+  .wheel-controls svg:last-child {
+    transition-duration: 150ms;
+    transition-delay: var(--wheel-btn-reset-trans-delay, 0ms);
+    scale: var(--wheel-btn-reset-scale, 0);
+    pointer-events: var(--wheel-btn-reset-event, none);
+  }
+
+  /* 转盘旋转动画 */
+  .wheel-wrapper:has(input[type=checkbox]:checked) > .wheel {
+    animation: wheel-spin var(--wheel-spin-duration, 3s) cubic-bezier(0, 0.061, 0, 1.032) forwards;
+  }
+
+  .wheel-wrapper:has(input[type=checkbox]:checked) .wheel-controls::before {
+    animation: wheel-marker-shake 100ms ease-in-out;
+    animation-iteration-count: 15;
+  }
+
+  /* 转盘本体 */
+  .wheel {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    border: 1px solid #e6f4ea;
+    user-select: none;
+    background: repeating-conic-gradient(
+      from calc(var(--wheel-slice-angle) / 2),
+      var(--wheel-bg-1) 0deg var(--wheel-slice-angle),
+      var(--wheel-bg-2) var(--wheel-slice-angle) calc(var(--wheel-slice-angle) * 2),
+      var(--wheel-bg-3) calc(var(--wheel-slice-angle) * 2) calc(var(--wheel-slice-angle) * 3),
+      var(--wheel-bg-4) calc(var(--wheel-slice-angle) * 3) calc(var(--wheel-slice-angle) * 4)
+    );
+  }
+
+  /* 核心：文字沿弧边排列（小而清晰） */
+  .wheel > span {
+    --wheel-i: sibling-index();
+    position: absolute;
+    font-size: clamp(0.5rem, 1.2vw, 1rem); /* 更小更紧凑 */
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #374151; /* 清晰深灰 */
+    font-weight: 500;
+    text-align: center;
+    line-height: 1;
+    width: 50px;
+
+    /* 弧边排列核心逻辑 */
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
+    /* 先旋转到扇区角度 → 沿圆弧定位 → 文字自身旋转贴合弧边 */
+    transform: 
+      translate(-50%, -50%)
+      rotate(calc((var(--wheel-i) - 1) * var(--wheel-slice-angle)))
+      translateY(calc(var(--wheel-text-radius) * -1))
+      rotate(90deg);
+  }
+
+  /* 兼容不支持sibling-index的浏览器 */
+  @supports not (sibling-index(0)) {
+    .wheel > span:nth-child(1)  { --wheel-i: 1; }
+    .wheel > span:nth-child(2)  { --wheel-i: 2; }
+    .wheel > span:nth-child(3)  { --wheel-i: 3; }
+    .wheel > span:nth-child(4)  { --wheel-i: 4; }
+    .wheel > span:nth-child(5)  { --wheel-i: 5; }
+    .wheel > span:nth-child(6)  { --wheel-i: 6; }
+    .wheel > span:nth-child(7)  { --wheel-i: 7; }
+    .wheel > span:nth-child(8)  { --wheel-i: 8; }
+    .wheel > span:nth-child(9)  { --wheel-i: 9; }
+    .wheel > span:nth-child(10) { --wheel-i: 10; }
+    .wheel > span:nth-child(11) { --wheel-i: 11; }
+    .wheel > span:nth-child(12) { --wheel-i: 12; }
+  }
+
+  /* 生活化文字内容 */
+  .wheel > span:nth-child(1)::after { content: "悬疑"; }
+  .wheel > span:nth-child(2)::after { content: "科幻"; }
+  .wheel > span:nth-child(3)::after { content: "言情"; }
+  .wheel > span:nth-child(4)::after { content: "武侠"; }
+  .wheel > span:nth-child(5)::after { content: "推理"; }
+  .wheel > span:nth-child(6)::after { content: "玄幻"; }
+  .wheel > span:nth-child(7)::after { content: "名著"; }
+  .wheel > span:nth-child(8)::after { content: "短篇"; }
+  .wheel > span:nth-child(9)::after { content: "网文"; }
+  .wheel > span:nth-child(10)::after { content: "历史"; }
+  .wheel > span:nth-child(11)::after { content: "青春"; }
+  .wheel > span:nth-child(12)::after { content: "随便看"; }
+
+  /* 转盘动画 */
+  @keyframes wheel-spin {
+    to { rotate: var(--wheel-random-angle); }
+  }
+
+  @keyframes wheel-marker-shake {
+    25% { rotate: 8deg; }
+    75% { rotate: 0deg; }
+  }
+}
+
+/* 基础样式重置 */
+@layer wheel-base {
+  .wheel-wrapper *,
+  .wheel-wrapper ::before,
+  .wheel-wrapper ::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}

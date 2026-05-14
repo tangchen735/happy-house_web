@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>汤圆啊汤圆</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        background-color: #f9f7f8; /* 淡紫调奶油白背景 */
+      }
+
+      /* 核心修改：去掉全局所有元素的边框，只保留基础重置 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box; /* 保留这个，保证布局正常 */
+        border: none !important; /* 强制去掉所有元素的边框 */
+      }
+
+      /* 只给需要的容器加边框（淡紫调） */
+      .baise {
+        background-color: #ffffff;
+        border: 1px solid #e8e2e9 !important; /* 淡紫细边框 */
+        border-radius: 8px !important; /* 加圆角更美观 */
+      }
+
+      .flex {
+        display: flex;
+      }
+
+      .flex1 {
+        flex: 1;
+      }
+
+      .column {
+        flex-direction: column;
+      }
+
+      .mg8 {
+        margin: 8px;
+      }
+
+      .mgr8 {
+        margin-right: 8px;
+      }
+
+      .mgt8 {
+        margin-top: 8px;
+      }
+
+      .yinying {
+        box-shadow: rgba(146, 119, 161, 0.08) 0px 2px 8px !important; /* 淡紫调阴影 */
+        border-radius: 8px !important; /* 加圆角 */
+      }
+
+      .daohang {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 16px 0;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e8e2e9 !important; /* 淡紫调底部边框 */
+        font-size: 24px;
+        overflow-y: auto;
+      }
+
+      /* 导航列表容器类 - 清除ul默认样式 */
+      .nav-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      /* 导航列表项类 - 控制li的间距 */
+      .nav-item {
+        margin-bottom: 4px;
+      }
+
+      /* 导航链接核心样式类 - 淡紫调 */
+      .nav-link {
+        display: block;
+        padding: 12px 20px;
+        text-decoration: none;
+        color: #5a4b60; /* 淡紫灰文字 */
+        font-size: 16px;
+        border-radius: 6px !important; /* 全圆角更协调 */
+        transition: all 0.2s ease;
+        background-color: transparent;
+        text-align: center; /* 水平居中 */
+        line-height: normal; /* 垂直居中 */
+      }
+
+      /* 导航链接悬浮效果类（淡紫调） */
+      .nav-link:hover {
+        background-color: #f3edf7 !important; /* 淡紫悬浮背景 */
+        color: #8b5cf6 !important; /* 主紫交互色 */
+      }
+
+      /* 导航链接激活/选中状态类（淡紫调） */
+      .nav-link.active {
+        background-color: #ede9fe !important; /* 淡紫选中背景 */
+        color: #7c3aed !important; /* 深紫主色 */
+        font-weight: 500;
+      }
+
+      /* 公告栏容器核心类（淡紫调） */
+      .notice-card {
+        height: 160px;
+        padding: 24px 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        border-radius: 12px !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 2px 10px rgba(146, 119, 161, 0.05) !important; /* 淡紫调阴影 */
+        border: 1px solid #f3edf7 !important; /* 淡紫细边框 */
+      }
+
+      /* 公告栏悬浮效果（淡紫调） */
+      .notice-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(146, 119, 161, 0.08) !important; /* 淡紫调阴影加深 */
+      }
+
+      /* 公告标题行容器 */
+      .notice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      /* 公告标题（淡紫调） */
+      .notice-title {
+        margin: 0;
+        font-size: 20px;
+        color: #2d232e; /* 深紫灰文字 */
+        font-weight: 600;
+        line-height: 1.3;
+      }
+
+      /* 公告时间（淡紫调） */
+      .notice-time {
+        font-size: 14px;
+        color: #917899; /* 浅紫灰文字 */
+        white-space: nowrap;
+        margin-left: 20px;
+      }
+
+      /* 公告摘要（淡紫调） */
+      .notice-desc {
+        margin: 0;
+        font-size: 15px;
+        color: #4a3f4d; /* 中紫灰文字 */
+        line-height: 1.7;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* 最多2行，更紧凑 */
+        -webkit-box-orient: vertical;
+      }
+      /* 版权信息样式（淡紫调强化） */
+      .copyright {
+        padding: 24px 28px;
+        margin: 8px;
+        /* 淡紫调渐变背景 */
+        background: linear-gradient(135deg, #fdfbff 0%, #f7f3fa 100%);
+        /* 淡紫细边框 */
+        border: 1px solid #e9e4ec !important;
+        border-radius: 12px !important;
+        text-align: center;
+        font-size: 14px;
+        /* 深紫灰文字 */
+        color: #6b5b70;
+        /* 淡紫调阴影 */
+        box-shadow: 0 2px 10px rgba(146, 119, 161, 0.06) !important;
+        /* 轻微内边距阴影，模拟微浮雕效果 */
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* 微浮雕装饰线（淡紫调） */
+      .copyright::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d8cfe6, transparent); /* 淡紫渐变线 */
+      }
+
+      .copyright p {
+        margin: 8px 0;
+        line-height: 1.8;
+        /* 文字轻微描边，增加质感 */
+        text-shadow: 0 0.5px 1px rgba(255, 255, 255, 0.8);
+      }
+
+      /* 联系方式单独配色（主紫调） */
+      .copyright p:last-child {
+        color: #8b5cf6; /* 主紫调 */
+        font-weight: 500;
+      }
+      /* 响应式样式 */
+      @media(max-width:600px) {
+        .cebian {
+          display: none;
+        }
+        .neirong {
+          flex-direction: column;
+        }
+        .shujuqu {
+          flex-direction: column;
+        }
+        .youqu {
+          margin-left: 8px;
+        }
+        .shuju {
+          margin: 0 0 8px;
+          flex: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="flex">
+    <!--侧边栏-->
+    <div style="width: 200px;z-index: 1;" class="cebian baise yinying yinying">
+      <!-- 头像栏：左对齐，控制输入框宽度 -->
+      <div class="flex" style="
+        padding: 12px 16px; 
+        align-items: center; 
+        border-bottom: 1px solid #e8e2e9; /* 淡紫调边框 */
+        overflow: hidden; /* 防止头像探出边框 */
+      ">
+        <img src="2.jpg" alt="tanyuan" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+      <div style="margin-left: 12px; flex: 1;">
+        <!-- 固定显示“小汤圆”的输入框 -->
+        <input 
+          style="
+            width: 100%; 
+            border: none; 
+            outline: none; 
+            font-size: 24px;
+            padding: 4px 0;
+            color: #5a4b60; /* 匹配淡紫调文字色 */
+            background-color: transparent;
+          " 
+          value="小汤圆"  
+          readonly/>
+      </div>
+      </div>
+      <!-- 导航栏 -->
+      <div style="padding: 16px 0;" >
+        <!-- ul加.nav-list类 -->
+        <ul class="nav-list">
+          <!-- li加.nav-item类 -->
+          <li class="nav-item">
+            <!-- a加.nav-link类，当前页加.active类 -->
+            <a href="novel/novel.html" class="nav-link active">小说</a>
+          </li>
+          <li class="nav-item">
+            <a href="anime/anime.html" class="nav-link active">动漫</a>
+          </li>
+          <li class="nav-item">
+            <a href="video/video.html" class="nav-link active">视频</a>
+          </li>
+          <li class="nav-item">
+            <a href="music/music.html" class="nav-link active">音乐</a>
+          </li>
+          <li class="nav-item">
+            <a href="lianyaochang/lianyaochang.html" class="nav-link active">炼药厂</a>
+          </li>
+          <li class="nav-item">
+            <a href="yugang/yugang.html" class="nav-link active">爷的赛博鱼缸</a>
+          </li>
+          <li class="nav-item">
+            <a href="waibulianjie/waibulianjie.html" class="nav-link active">外部链接</a>
+          </li>
+        </ul>
+      </div>
+     <!-- 侧边栏2D猫咪宠物 -->
+      <div style="
+        width: 100%;
+        margin-top: 20px;
+        text-align: center;
+        padding: 10px 0;
+      ">
+        <img 
+          id="cat-pet"  src="cat.gif"
+          style="
+            width: 80px; /* 可调整猫咪大小 */
+            cursor: pointer; /* 鼠标移上去显示手型 */
+            transition: all 0.2s ease; /* 切换时的顺滑效果 */
+          "
+          alt="2D猫咪宠物"
+        />
+      </div>
+
+      <!-- 引入外部JS文件（放在侧边栏最后） -->
+    <script src="pet-cat.js"></script>
+    </div>
+
+    <!--主区域-->
+    <div class="flex1 flex column" class="mg8">
+    <!-- 头部栏 - 淡紫调温柔风格 -->
+    <!-- 标题栏容器 -->
+      <div class="title-bar">
+        <!-- 动效切换导航 -->
+        <nav class="title-nav">
+          <button class="active" data-stage="s1">Magnetic</button>
+          <button data-stage="s2">Glitch</button>
+          <button data-stage="s3">Wave</button>
+          <button data-stage="s4">Particles</button>
+          <button data-stage="s5">3D Flip</button>
+          <button data-stage="s6">Typewriter</button>
+        </nav>
+
+        <!-- 动效舞台容器 -->
+        <div class="stage-container">
+          <!-- 1. 磁吸效果 -->
+          <section id="s1" class="stage active">
+            <div class="stage-label">Drift your cursor close</div>
+            <div id="magnetic" class="magnetic-wrap">
+              <span>D</span>
+              <span>r</span>
+              <span>e</span>
+              <span>a</span>
+              <span>m</span>
+              <span>&nbsp;</span>
+              <span>B</span>
+              <span>i</span>
+              <span>g</span>
+            </div>
+            <p class="hint">The letters sense your presence & push back magnetically</p>
+          </section>
+
+          <!-- 2. 故障效果 -->
+          <section id="s2" class="stage">
+            <div class="stage-label">Hover or click</div>
+            <div id="glitch" class="glitch-wrap" data-text="Dream Big">Dream Big</div>
+            <p class="hint">Hover to briefly corrupt reality, click to scramble</p>
+          </section>
+
+          <!-- 3. 波浪效果 -->
+          <section id="s3" class="stage">
+            <div class="stage-label">Click to trigger</div>
+            <div id="wave" class="wave-wrap">
+              <span>D</span>
+              <span>r</span>
+              <span>e</span>
+              <span>a</span>
+              <span>m</span>
+              <span>&nbsp;</span>
+              <span>B</span>
+              <span>i</span>
+              <span>g</span>
+            </div>
+            <p class="hint">Send a cascading wave of energy & color from end to end</p>
+          </section>
+
+          <!-- 4. 粒子效果 -->
+          <section id="s4" class="stage">
+            <div class="stage-label">Click the text</div>
+            <div class="particle-container">
+              <canvas id="particle-canvas"></canvas>
+              <div id="particle-text" class="particle-wrap">Dream Big</div>
+            </div>
+            <p class="hint">Ignite a colorful burst of gravity-driven confetti with every click</p>
+          </section>
+
+          <!-- 5. 3D翻转效果 -->
+          <section id="s5" class="stage">
+            <div class="stage-label">Hover and click</div>
+            <div class="flip-wrap">
+              <span>D</span>
+              <span>r</span>
+              <span>e</span>
+              <span>a</span>
+              <span>m</span>
+              <span>&nbsp;</span>
+              <span>B</span>
+              <span>i</span>
+              <span>g</span>
+            </div>
+            <p class="hint">Hover to spin letters in 3D space, click anywhere to toggle case</p>
+          </section>
+
+          <!-- 6. 打字机效果 -->
+          <section id="s6" class="stage">
+            <div class="stage-label">Command the sequence</div>
+            <div class="typewriter-container">
+              <span id="type-text"></span>
+              <span class="cursor"></span>
+              <div class="type-controls">
+                <button id="btn-type" class="type-btn">Type</button>
+                <button id="btn-erase" class="type-btn">Erase</button>
+                <button id="btn-loop" class="type-btn">Loop</button>
+              </div>
+            </div>
+            <p class="hint">Type it out, wipe it clean, or let it loop endlessly</p>
+          </section>
+        </div>
+      </div>
+
+      <!--内容区-->
+      <div style="overflow: auto;" class="neirong flex1 flex">
+        <!--左区-->
+        <div style="flex: 3" class="flex column">
+          <!--上-->
+          <div class="flex shujuqu">
+            <!-- 眼睛跟随鼠标效果核心模块 - 可放入任意div中 -->
+            <div class="eye-follow-container ">
+              <!-- Panel 1: Green, Simple Round Eyes -->
+              <div class="eye-panel" style="background-color: #6db85a;">
+                <svg viewBox="0 0 200 150">
+                  <path d="M 40 30 Q 60 20 80 30" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" />
+                  <path d="M 120 30 Q 140 20 160 30" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" />
+                  <g class="eye-group" data-cx="60" data-cy="75" data-r="15">
+                    <ellipse cx="60" cy="75" rx="35" ry="40" fill="white" stroke="#000" stroke-width="4" />
+                    <circle class="pupil" cx="60" cy="75" r="18" fill="#000" />
+                    <circle class="highlight" cx="55" cy="70" r="6" fill="#fff" />
+                  </g>
+                  <g class="eye-group" data-cx="140" data-cy="75" data-r="15">
+                    <ellipse cx="140" cy="75" rx="35" ry="40" fill="white" stroke="#000" stroke-width="4" />
+                    <circle class="pupil" cx="140" cy="75" r="18" fill="#000" />
+                    <circle class="highlight" cx="135" cy="70" r="6" fill="#fff" />
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Panel 2: Yellow/Orange, Spiky Eyes -->
+              <div class="eye-panel" style="background-color: #f5a623;">
+                <svg viewBox="0 0 200 150">
+                  <g class="eye-group" data-cx="60" data-cy="75" data-r="12">
+                    <ellipse cx="60" cy="75" rx="30" ry="35" fill="white" stroke="#000" stroke-width="4" />
+                    <line x1="60" y1="40" x2="60" y2="25" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="45" y1="42" x2="35" y2="30" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="75" y1="42" x2="85" y2="30" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="33" y1="55" x2="20" y2="50" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="87" y1="55" x2="100" y2="50" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <ellipse class="pupil" cx="60" cy="75" rx="18" ry="22" fill="#000" />
+                    <ellipse class="highlight" cx="55" cy="68" rx="5" ry="7" fill="#fff" />
+                  </g>
+                  <g class="eye-group" data-cx="140" data-cy="75" data-r="12">
+                    <ellipse cx="140" cy="75" rx="30" ry="35" fill="white" stroke="#000" stroke-width="4" />
+                    <line x1="140" y1="40" x2="140" y2="25" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="125" y1="42" x2="115" y2="30" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="155" y1="42" x2="165" y2="30" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="113" y1="55" x2="100" y2="50" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="167" y1="55" x2="180" y2="50" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <ellipse class="pupil" cx="140" cy="75" rx="18" ry="22" fill="#000" />
+                    <ellipse class="highlight" cx="135" cy="68" rx="5" ry="7" fill="#fff" />
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Panel 3: Blue, Simple Oval Eyes -->
+              <div class="eye-panel" style="background-color: #5b8fd8;">
+                <svg viewBox="0 0 200 150">
+                  <path d="M 45 25 Q 60 15 75 25" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" />
+                  <path d="M 125 25 Q 140 15 155 25" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" />
+                  <g class="eye-group" data-cx="60" data-cy="75" data-r="13">
+                    <ellipse cx="60" cy="75" rx="32" ry="38" fill="white" stroke="#000" stroke-width="4" />
+                    <ellipse class="pupil" cx="60" cy="75" rx="16" ry="20" fill="#000" />
+                    <ellipse class="highlight" cx="55" cy="68" rx="5" ry="6" fill="#fff" />
+                  </g>
+                  <g class="eye-group" data-cx="140" data-cy="75" data-r="13">
+                    <ellipse cx="140" cy="75" rx="32" ry="38" fill="white" stroke="#000" stroke-width="4" />
+                    <ellipse class="pupil" cx="140" cy="75" rx="16" ry="20" fill="#000" />
+                    <ellipse class="highlight" cx="135" cy="68" rx="5" ry="6" fill="#fff" />
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Panel 4: Peach/Orange, Sad/Evil Eyes -->
+              <div class="eye-panel" style="background-color: #f8c97d;">
+                <svg viewBox="0 0 200 150">
+                  <path d="M 35 35 L 75 55" stroke="#000" stroke-width="5" fill="none" stroke-linecap="round" />
+                  <path d="M 125 55 L 165 35" stroke="#000" stroke-width="5" fill="none" stroke-linecap="round" />
+                  <g class="eye-group" data-cx="55" data-cy="80" data-r="10">
+                    <path d="M 25 80 Q 55 60 85 80 Q 55 110 25 80" fill="white" stroke="#000" stroke-width="4" />
+                    <path class="pupil" d="M 45 80 Q 55 70 65 80 Q 55 90 45 80" fill="#000" />
+                  </g>
+                  <g class="eye-group" data-cx="145" data-cy="80" data-r="10">
+                    <path d="M 115 80 Q 145 60 175 80 Q 145 110 115 80" fill="white" stroke="#000" stroke-width="4" />
+                    <path class="pupil" d="M 135 80 Q 145 70 155 80 Q 145 90 135 80" fill="#000" />
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Panel 5: Red, Heart Eyes -->
+              <div class="eye-panel" style="background-color: #e74c3c;">
+                <svg viewBox="0 0 200 150">
+                  <g class="eye-group" data-cx="60" data-cy="75" data-r="10">
+                    <path d="M 60 105 C 60 105 30 85 30 65 C 30 50 40 40 55 40 C 60 40 60 45 60 45 C 60 45 60 40 65 40 C 80 40 90 50 90 65 C 90 85 60 105 60 105 Z" fill="white" stroke="#000" stroke-width="4" />
+                    <path class="pupil" d="M 60 95 C 60 95 42 82 42 70 C 42 62 48 55 56 55 C 60 55 60 58 60 58 C 60 58 60 55 64 55 C 72 55 78 62 78 70 C 78 82 60 95 60 95 Z" fill="#000" />
+                  </g>
+                  <g class="eye-group" data-cx="140" data-cy="75" data-r="10">
+                    <path d="M 140 105 C 140 105 110 85 110 65 C 110 50 120 40 135 40 C 140 40 140 45 140 45 C 140 45 140 40 145 40 C 160 40 170 50 170 65 C 170 85 140 105 140 105 Z" fill="white" stroke="#000" stroke-width="4" />
+                    <line x1="140" y1="38" x2="140" y2="25" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="125" y1="40" x2="115" y2="28" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <line x1="155" y1="40" x2="165" y2="28" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                    <path class="pupil" d="M 140 95 C 140 95 122 82 122 70 C 122 62 128 55 136 55 C 140 55 140 58 140 58 C 140 58 140 55 144 55 C 152 55 158 62 158 70 C 158 82 140 95 140 95 Z" fill="#000" />
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Panel 6: Pink, Sad/Crying Eyes -->
+              <div class="eye-panel" style="background-color: #f4a6a6;">
+                <svg viewBox="0 0 200 150">
+                  <path d="M 40 30 Q 60 35 80 30" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" />
+                  <path d="M 120 30 Q 140 35 160 30" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round" />
+                  <g class="eye-group" data-cx="60" data-cy="70" data-r="12">
+                    <ellipse cx="60" cy="70" rx="32" ry="35" fill="white" stroke="#000" stroke-width="4" />
+                    <ellipse class="pupil" cx="60" cy="70" rx="15" ry="20" fill="#000" />
+                    <ellipse class="highlight" cx="55" cy="65" rx="5" ry="6" fill="#fff" />
+                  </g>
+                  <g class="eye-group" data-cx="140" data-cy="70" data-r="12">
+                    <ellipse cx="140" cy="70" rx="32" ry="35" fill="white" stroke="#000" stroke-width="4" />
+                    <ellipse class="pupil" cx="140" cy="70" rx="15" ry="20" fill="#000" />
+                    <ellipse class="highlight" cx="135" cy="65" rx="5" ry="6" fill="#fff" />
+                  </g>
+                  <path d="M 45 100 Q 50 115 55 100" fill="#4a9eff" opacity="0.8" />
+                  <path d="M 65 100 Q 70 115 75 100" fill="#4a9eff" opacity="0.8" />
+                  <path d="M 125 100 Q 130 115 135 100" fill="#4a9eff" opacity="0.8" />
+                  <path d="M 145 100 Q 150 115 155 100" fill="#4a9eff" opacity="0.8" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <!--下-->
+            <!-- 列表区容器（保持不变） -->
+        <div class="flex column" style="position: relative;">
+          <!-- 公告列表（保留原有结构，新增点击交互） -->
+          <!-- 第一个公告栏 -->
+          <div class="notice-card baise yinying mgt8" onclick="openNoticeModal('公告1', '2026-03-13', `各位朋友，大家好！
+        <br><br>
+        经过一段时间的筹备，我的个人网站「冯明娟的快乐小屋」今天正式上线啦！
+        <br><br>
+        ✨ 网站主要内容：
+        - 小说推荐与分享（言情、治愈、悬疑等类型）
+        - 动漫盘点（治愈系、热血系、日常系）
+        - 趣味视频合集
+        - 好听的音乐推荐
+        <br><br>
+        后续还会不断更新更多有趣的内容，欢迎常来看看，也欢迎大家留言分享自己喜欢的内容~
+        <br><br>
+        冯明娟
+        2026年3月13日`)">
+            <div class="notice-header">
+              <h3 class="notice-title">网站上线公告🎉</h3>
+              <span class="notice-time">2026-03-13</span>
+            </div>
+            <p class="notice-desc">
+              各位朋友，大家好！经过一段时间的筹备，我的个人网站今天正式上线啦！
+            </p>
+          </div>
+
+          <!-- 第二个公告栏 -->
+          <div class="notice-card baise yinying mgt8" onclick="openNoticeModal('本周更新：新增5部治愈系动漫推荐', '2026-03-10', `本周更新啦！给大家整理了5部超治愈的动漫：
+        <br><br>
+        1. 《夏目友人帐》- 温柔治愈，关于陪伴与成长
+        2. 《龙猫》- 宫崎骏经典，童年的美好与温暖
+        3. 《白兔糖》- 日常温馨，治愈人心的亲情故事
+        4. 《元气食堂》- 轻松搞笑，解压必备
+        5. 《玉子市场》- 小镇日常，简单又美好
+        <br><br>
+        全部已更新到动漫板块，快去看看吧～
+        <br><br>
+        温馨提示：适合在放松心情、感到疲惫时观看哦！`)">
+            <div class="notice-header">
+              <h3 class="notice-title">本周更新：新增5部治愈系动漫推荐</h3>
+              <span class="notice-time">2026-03-10</span>
+            </div>
+            <p class="notice-desc">
+              本周给大家整理了5部超治愈的动漫，涵盖温馨日常、成长治愈等类型，适合放松心情时观看，全部已更新到动漫板块，快去看看吧～
+            </p>
+          </div>
+
+          <!-- 新增公告示例（复制这段修改内容即可） -->
+          <!--
+          <div class="notice-card baise yinying mgt8" onclick="openNoticeModal('你的公告标题', '发布时间', `你的公告完整内容
+        <br>支持换行
+        <br>可以写任意内容`)">
+            <div class="notice-header">
+              <h3 class="notice-title">你的公告标题</h3>
+              <span class="notice-time">发布时间</span>
+            </div>
+            <p class="notice-desc">你的公告简短摘要（列表页显示）</p>
+          </div>
+          -->
+
+          <!-- 空公告占位（可删除或替换为实际内容） -->
+          <div class="notice-card baise yinying mgt8"></div>
+          <div class="notice-card baise yinying mgt8"></div>
+          <div class="notice-card baise yinying mgt8"></div>
+          <div class="notice-card baise yinying mgt8"></div>
+
+          <!-- 版权信息 -->
+          <div class="copyright mgt8">
+            <p>© 2026 我的个人网页 - 保留所有权利</p>
+            <p>联系方式：1907794033@qq.com</p>
+          </div>
+
+          <!-- 公告详情弹窗（嵌入模块内，仅作用于当前模块） -->
+          <div id="noticeModal" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+          ">
+            <div style="
+              width: 90%;
+              max-width: 600px;
+              background: #fff;
+              border-radius: 10px;
+              padding: 24px;
+              position: relative;
+              transform: translateY(-20px);
+              transition: all 0.3s ease;
+              box-sizing: border-box;
+            ">
+              <button onclick="closeNoticeModal()" style="
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                width: 24px;
+                height: 24px;
+                border: none;
+                background: none;
+                cursor: pointer;
+                font-size: 20px;
+                color: #999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">×</button>
+              <h2 id="modalTitle" style="
+                font-size: 20px;
+                color: #333;
+                font-weight: 600;
+                margin-bottom: 8px;
+              "></h2>
+              <span id="modalTime" style="
+                font-size: 14px;
+                color: #999;
+                margin-bottom: 20px;
+                display: block;
+              "></span>
+              <div id="modalContent" style="
+                font-size: 16px;
+                color: #444;
+                line-height: 1.8;
+              "></div>
+            </div>
+          </div>
+
+          <!-- 模块内专属脚本（仅作用于当前模块，不影响全局） -->
+          <script>
+            // 打开公告详情弹窗（仅作用于当前模块）
+            function openNoticeModal(title, time, content) {
+              const modal = document.getElementById('noticeModal');
+              const modalTitle = document.getElementById('modalTitle');
+              const modalTime = document.getElementById('modalTime');
+              const modalContent = document.getElementById('modalContent');
+              
+              // 填充内容
+              modalTitle.textContent = title;
+              modalTime.textContent = time;
+              modalContent.innerHTML = content;
+              
+              // 显示弹窗
+              modal.style.opacity = '1';
+              modal.style.visibility = 'visible';
+              modal.querySelector('div').style.transform = 'translateY(0)';
+              
+              // 禁止页面滚动
+              document.body.style.overflow = 'hidden';
+            }
+
+            // 关闭公告详情弹窗
+            function closeNoticeModal() {
+              const modal = document.getElementById('noticeModal');
+              modal.style.opacity = '0';
+              modal.style.visibility = 'hidden';
+              modal.querySelector('div').style.transform = 'translateY(-20px)';
+              
+              // 恢复页面滚动
+              document.body.style.overflow = '';
+            }
+
+            // 点击弹窗遮罩层关闭
+            document.getElementById('noticeModal').addEventListener('click', function(e) {
+              if (e.target === this) {
+                closeNoticeModal();
+              }
+            });
+
+            // 给公告卡片添加悬浮效果（仅当前模块）
+            const noticeCards = document.querySelectorAll('.flex.column .notice-card');
+            noticeCards.forEach(card => {
+              if (card.innerHTML.trim() !== '') { // 仅给有内容的卡片加效果
+                card.style.cursor = 'pointer';
+                card.style.transition = 'all 0.2s ease';
+                card.addEventListener('mouseover', function() {
+                  this.style.boxShadow = '0 4px 12px rgba(146, 119, 161, 0.1)';
+                  this.style.transform = 'translateY(-2px)';
+                });
+                card.addEventListener('mouseout', function() {
+                  this.style.boxShadow = '';
+                  this.style.transform = 'translateY(0)';
+                });
+              }
+            });
+          </script>
+        </div>
+        </div>
+        <!--右区-->
+        <div style="flex: 1;"  class=" youqu flex column mgr8 mgt8">
+          <!-- 提示区：淡绿色实时时间模块（匹配日历风格） -->
+          <div class="time-display baise yinying" style="height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #f8fdf7 0%, #f0f9eb 100%) !important; border: 1px solid #e6f4ea !important; border-radius: 12px !important; box-shadow: 0 2px 10px rgba(107, 168, 122, 0.06) !important;">
+            <div class="time-main" id="currentTime" style="font-size: 36px; font-weight: 600; color: #34d399; letter-spacing: 3px; margin-bottom: 12px; text-shadow: 0 1px 2px rgba(52, 211, 153, 0.1);">--:--:--</div>
+            <div class="time-date" id="currentDate" style="font-size: 16px; color: #64748b; color: #65a30d;">----年--月--日 星期--</div>
+          </div>
+
+          <!-- 时间更新JS（保留功能，无需修改） -->
+          <script>
+          function updateCurrentTime() {
+            const now = new Date();
+            const timeEl = document.getElementById('currentTime');
+            const dateEl = document.getElementById('currentDate');
+
+            // 格式化时间
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            timeEl.textContent = `${h}:${m}:${s}`;
+
+            // 格式化日期
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const week = ['日', '一', '二', '三', '四', '五', '六'][now.getDay()];
+            dateEl.textContent = `${year}年${month}月${day}日 星期${week}`;
+          }
+
+          // 立即执行+每秒更新
+          updateCurrentTime();
+          setInterval(updateCurrentTime, 1000);
+          </script>
+          <!--消息区-->
+          <!-- 消息区 - 新日历组件 -->
+          <div class="flex1 mgt8 baise yinying" style="
+            padding: 0; /* 去掉原有padding，由日历自身padding控制 */
+            display: flex;
+            flex-direction: column;
+          ">
+            <!-- 日历核心结构 -->
+            <div class="calendar">
+              <div class="title">
+                <div style="display: flex; align-items: baseline;">
+                  <h1 class="green" id="calendar-title">Month</h1>
+                  <h2 class="green small" id="calendar-year">Year</h2>
+                </div>
+                <div>
+                  <a href="" id="prev">Prev Month</a>
+                  <a href="" id="next">Next Month</a>
+                </div>
+              </div>
+              <div class="body">
+                <div class="lightgrey body-list">
+                  <ul>
+                    <li>MON</li>
+                    <li>TUE</li>
+                    <li>WED</li>
+                    <li>THU</li>
+                    <li>FRI</li>
+                    <li>SAT</li>
+                    <li>SUN</li>
+                  </ul>
+                </div>
+                <div class="darkgrey body-list">
+                  <ul id="days"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+            <!-- 新增：小说随机转盘模块 -->
+          <div class="baise yinying mgt8" style="
+            height: 320px; /* 适配转盘尺寸 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f8fdf7 0%, #f0f9eb 100%) !important;
+            border: 1px solid #e6f4ea !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 10px rgba(107, 168, 122, 0.06) !important;
+          ">
+            <section class="wheel-wrapper">
+              <input type="checkbox" id="radio-spin-wheel">
+              <div class="wheel-controls">
+                <label for="radio-spin-wheel">
+                  <!-- 旋转图标 -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M14 12a2 2 0 1 0 -4 0a2 2 0 0 0 4 0" />
+                    <path d="M12 21c-3.314 0 -6 -2.462 -6 -5.5s2.686 -5.5 6 -5.5" />
+                    <path d="M21 12c0 3.314 -2.462 6 -5.5 6s-5.5 -2.686 -5.5 -6" />
+                    <path d="M12 14c3.314 0 6 -2.462 6 -5.5s-2.686 -5.5 -6 -5.5" />
+                    <path d="M14 12c0 -3.314 -2.462 -6 -5.5 -6s-5.5 2.686 -5.5 6" />
+                  </svg>
+                  <!-- 重置图标 -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M3.06 13a9 9 0 1 0 .49 -4.087" />
+                    <path d="M3 4.001v5h5" />
+                    <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                  </svg>
+                </label>
+              </div>
+              <!-- 转盘分区（12个span） -->
+              <div class="wheel">
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </section>
+          </div>
+
+          <!-- 引入外部CSS -->
+          <link rel="stylesheet" href="new-calendar.css">
+          <link rel="stylesheet" href="wheel.css">
+          <link rel="stylesheet" href="confetti.css">
+          <link rel="stylesheet" href="eye-follow.css">
+          <link rel="stylesheet" href="title-style.css">
+          
+
+          <!-- 引入外部JS -->
+          <script src="time-script.js"></script>
+          <script src="new-calendar.js"></script>
+          <script src="confetti.js"></script>
+          <script src="eye-follow.js"></script>
+          <script src="title-script.js"></script>
+      </div>
+    </div>
+  </body>
+</html>

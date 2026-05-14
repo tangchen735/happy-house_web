@@ -1,0 +1,90 @@
+/* new-calendar.css - 日历样式 */
+.calendar {
+  width: 100%; /* 适配容器宽度，不再固定450px */
+  height: 100%; /* 适配容器高度，不再固定350px */
+  min-height: 350px; /* 保证最小高度 */
+  background: #fff;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 12px; /* 加圆角，贴合你页面风格 */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 日历标题区 */
+.calendar .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.calendar .title h1#calendar-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.calendar .title h2#calendar-year {
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.calendar .title a {
+  text-decoration: none;
+  color: #6ac13c;
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.calendar .title a:hover {
+  background: #e9f8df;
+}
+
+/* 日历主体 */
+.calendar .body {
+  width: 100%;
+}
+
+.body-list ul {
+  width: 100%;
+  font-family: arial;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+  display: flex; /* 改用flex布局，更稳定 */
+  flex-wrap: wrap;
+}
+
+.body-list ul li {
+  width: 14.28%;
+  height: 36px;
+  line-height: 36px;
+  list-style-type: none;
+  box-sizing: border-box;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* 颜色样式 */
+.lightgrey {
+  color: #a8a8a8; /* 浅灰色 */
+}
+.darkgrey {
+  color: #565656; /* 深灰色 */
+}
+.green {
+  color: #6ac13c; /* 绿色 */
+}
+.greenbox {
+  border: 1px solid #6ac13c;
+  background: #e9f8df; /* 浅绿色背景 */
+  border-radius: 6px; /* 加圆角 */
+}

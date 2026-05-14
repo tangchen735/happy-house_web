@@ -1,0 +1,71 @@
+/* confetti.css - 五彩纸屑独立样式文件 */
+/* 重置基础样式，避免和现有样式冲突 */
+.confetti-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 纸屑容器（可选：如果想限定纸屑范围，可添加此容器） */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* 不遮挡页面交互 */
+  z-index: 9999; /* 确保在最上层 */
+  overflow: hidden;
+}
+
+/* 单个纸屑 */
+.confetti {
+  position: absolute;
+  top: -50px;
+  transform-style: preserve-3d;
+  animation: confetti-fall linear forwards;
+  pointer-events: none;
+}
+
+/* 纸屑的3D块 */
+.confetti-piece {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: confetti-spin linear infinite;
+}
+
+/* 纸屑的面 */
+.confetti-side {
+  position: absolute;
+  width: 12px;
+  height: 18px;
+  backface-visibility: hidden;
+}
+
+/* 纸屑背面（加深颜色） */
+.confetti-back {
+  transform: rotateY(180deg);
+  filter: brightness(0.6);
+}
+
+/* 下落动画 */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) translateZ(-800px) scale(0.3);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(110vh) translateZ(300px) scale(1.4);
+    opacity: 1;
+  }
+}
+
+/* 旋转动画 */
+@keyframes confetti-spin {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(720deg) rotateY(720deg) rotateZ(360deg);
+  }
+}

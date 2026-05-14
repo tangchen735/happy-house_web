@@ -1,0 +1,45 @@
+.eye-follow-container {
+  display: grid;
+  /* 关键：改为 1行6列 */
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 1fr;
+  gap: 0; /* 无缝衔接 */
+  width: 1200px; /* 6个面板 × 200px */
+  height: 150px; /* 固定高度 */
+  /* 阴影填满整个容器：水平0、垂直0、模糊20px、扩散10px */
+  box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5);
+  overflow: hidden; /* 防止阴影溢出 */
+}
+
+.eye-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.eye-panel svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 父容器 flex 样式（确保一行居中） */
+.flex.shujuqu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0;
+}
+
+/* 响应式适配（可选） */
+@media (max-width: 1200px) {
+  .eye-follow-container {
+    width: 100%;
+    height: auto;
+  }
+  .eye-panel {
+    aspect-ratio: 200 / 150; /* 保持宽高比 */
+  }
+}
